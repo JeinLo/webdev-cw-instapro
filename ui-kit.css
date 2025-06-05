@@ -15,25 +15,37 @@
 }
 
 html {
-  scrollbar-width: none;
-  overflow-x: hidden;
+  overflow-x: hidden; /* Предотвращаем горизонтальную прокрутку */
+  height: 100%;
 }
 
 body {
   margin: 0;
   padding: 0;
   font-family: StratosSkyeng, sans-serif;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden; /* Скрываем скроллбары на body */
   font-size: 14px;
   line-height: 18px;
   background: #f7f7f7;
+  height: 100%;
 }
 
+/* Обертка для контента с прокруткой */
+body > div#app {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+/* Скрываем скроллбары в WebKit-браузерах (Chrome, Safari, Samsung Internet) */
 body::-webkit-scrollbar {
   width: 0;
-  height: 0;
   background: transparent;
+}
+
+/* Скрываем скроллбары в старых IE/Edge */
+body {
+  -ms-overflow-style: none;
 }
 
 p {
@@ -183,8 +195,8 @@ strong {
   }
   50%,
   100% {
-    top: 24px;
-    height: 32px;
+    top: 20px;
+    height: 40px;
   }
 }
 
@@ -196,7 +208,8 @@ strong {
   background: #565eef;
   color: #ffffff;
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   font-size: 14px;
   line-height: 18px;
@@ -210,7 +223,7 @@ strong {
     transform: translateX(100%);
   }
   to {
-    transform: translateX(0);
+    transform: none;
   }
 }
 

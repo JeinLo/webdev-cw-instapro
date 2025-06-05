@@ -2,8 +2,9 @@ import { renderHeaderComponent } from "./header-component.js";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
 
-export function renderPostsPageComponent({
+export function renderUserPostsPageComponent({
   appEl,
+  userId,
   posts,
   user,
   goToPage,
@@ -13,19 +14,15 @@ export function renderPostsPageComponent({
   const appHtml = `
     <div class="page-container">
       <div class="header-container"></div>
-      <div class="filter-buttons">
-        <button class="button filter-button" id="sort-by-date">Сортировать по дате</button>
-        <button class="button filter-button" id="sort-by-likes">Сортировать по лайкам</button>
+      <div class="posts-user-header">
+        <img src="${posts[0]?.user.imageUrl || ""}" class="posts-user-header__user-image">
+        <p class="posts-user-header__user-name">${sanitizeHtml(posts[0]?.user.name || "")}</p>
       </div>
       <ul class="posts">
         ${posts
           .map(
             (post) => `
               <li class="post">
-                <div class="post-header" data-user-id="${post.user.id}">
-                  <img src="${post.user.imageUrl}" class="post-header__user-image">
-                  <p class="post-header__user-name">${sanitizeHtml(post.user.name)}</p>
-                </div>
                 <div class="post-image-container">
                   <img class="post-image" src="${post.imageUrl}">
                 </div>
@@ -60,12 +57,6 @@ export function renderPostsPageComponent({
     element: document.querySelector(".header-container"),
   });
 
-  for (let userEl of document.querySelectorAll(".post-header")) {
-    userEl.addEventListener("click", () => {
-      goToPage(USER_POSTS_PAGE, { userId: userEl.dataset.userId });
-    });
-  }
-
   for (let likeBtn of document.querySelectorAll(".like-button")) {
     likeBtn.addEventListener("click", () => {
       if (!user) {
@@ -80,8 +71,9 @@ export function renderPostsPageComponent({
           const post = posts.find((p) => p.id === postId);
           post.isLiked = response.post.isLiked;
           post.likes = response.post.likes;
-          renderPostsPageComponent({
+          renderUserPostsPageComponent({
             appEl,
+            userId,
             posts,
             user,
             goToPage,
@@ -95,30 +87,6 @@ export function renderPostsPageComponent({
         });
     });
   }
-
-  document.getElementById("sort-by-date").addEventListener("click", () => {
-    posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    renderPostsPageComponent({
-      appEl,
-      posts,
-      user,
-      goToPage,
-      likePost,
-      dislikePost,
-    });
-  });
-
-  document.getElementById("sort-by-likes").addEventListener("click", () => {
-    posts.sort((a, b) => b.likes.length - a.likes.length);
-    renderPostsPageComponent({
-      appEl,
-      posts,
-      user,
-      goToPage,
-      likePost,
-      dislikePost,
-    });
-  });
 }
 
 function sanitizeHtml(text) {

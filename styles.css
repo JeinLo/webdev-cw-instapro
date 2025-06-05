@@ -1,5 +1,8 @@
 .page-container {
   padding: 0 20px;
+  max-width: 700px;
+  margin: 0 auto;
+  background: #fff;
 }
 
 .page-header {
@@ -46,11 +49,19 @@
   margin: 0;
 }
 
+.post {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
 .post-header {
   display: flex;
   flex-direction: row;
   align-items: center;
   margin-bottom: 10px;
+  padding: 10px;
   cursor: pointer;
 }
 
@@ -82,6 +93,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  padding: 10px;
 }
 
 .like-button {
@@ -93,6 +105,16 @@
   cursor: pointer;
 }
 
+.like-button img {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.2s ease;
+}
+
+.like-button img:hover {
+  transform: scale(1.2);
+}
+
 .user-name {
   font-weight: 500;
 }
@@ -101,10 +123,14 @@
   font-size: 14px;
   line-height: 18px;
   margin-top: 5px;
+  padding: 0 10px;
 }
 
 .post-date {
   color: #8a8a8a;
+  font-size: 12px;
+  padding: 0 10px;
+  margin-bottom: 10px;
 }
 
 .post + .post {
@@ -116,6 +142,9 @@
   flex-direction: row;
   align-items: center;
   margin-bottom: 12px;
+  padding: 10px;
+  background: #f0f0f0;
+  border-radius: 8px;
 }
 
 .posts-user-header__user-image {
@@ -134,7 +163,8 @@
 .loading-page {
   display: flex;
   justify-content: center;
-  margin-top: 100px;
+  align-items: center;
+  min-height: 200px;
 }
 
 .add-post-sign {
@@ -147,6 +177,8 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 .form-title {
@@ -162,7 +194,9 @@
 }
 
 .form-error {
-  color: red;
+  color: #ff4444;
+  font-size: 14px;
+  text-align: center;
 }
 
 .form-footer {
@@ -176,7 +210,7 @@
   text-align: center;
 }
 
-.file-upload-image-conrainer {
+.file-upload-image-container {
   display: flex;
   align-items: center;
 }
@@ -186,7 +220,7 @@
   height: 100px;
   object-fit: cover;
   margin-right: 10px;
-  border: 1px solid gray;
+  border: 1px solid #e0e0e0;
   border-radius: 5px;
 }
 
@@ -195,4 +229,59 @@
   box-sizing: border-box;
   width: 100%;
   text-align: center;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-button {
+  background: #e8e8e8;
+  color: #041233;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.filter-button:hover {
+  background: #d0d0d0;
+}
+
+/* Адаптивность */
+@media (max-width: 600px) {
+  .page-container {
+    padding: 0 10px;
+  }
+
+  .post-image-container {
+    height: 300px;
+  }
+
+  .post-header__user-image,
+  .posts-user-header__user-image {
+    width: 40px;
+    height: 40px;
+  }
+
+  .posts-user-header__user-name {
+    font-size: 20px;
+    line-height: 25px;
+  }
+
+  .form {
+    max-width: 100%;
+  }
+
+  .post + .post {
+    margin-top: 15px;
+  }
+
+  .loading-page {
+    min-height: 150px;
+  }
 }

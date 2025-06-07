@@ -1,4 +1,3 @@
-// index.js
 import { renderHeaderComponent } from "./components/header-component.js";
 import { renderPostsPageComponent } from "./components/posts-page-component.js";
 import { renderAddPostPageComponent } from "./components/add-post-page-component.js";
@@ -62,8 +61,9 @@ export const goToPage = (newPage, data = {}) => {
         })
         .catch((error) => {
           console.error(error);
-          showNotification("Ошибка загрузки постов");
-          goToPage(POSTS_PAGE);
+          showNotification("Ошибка загрузки постов, попробуйте позже");
+          page = AUTH_PAGE; // Переходим на страницу авторизации вместо цикла
+          renderApp();
         });
     }
 
@@ -88,8 +88,11 @@ export const goToPage = (newPage, data = {}) => {
         })
         .catch((error) => {
           console.error(error);
-          showNotification("Ошибка загрузки постов пользователя");
-          goToPage(POSTS_PAGE);
+          showNotification(
+            "Ошибка загрузки постов пользователя, попробуйте позже"
+          );
+          page = AUTH_PAGE; // Переходим на страницу авторизации
+          renderApp();
         });
     }
 

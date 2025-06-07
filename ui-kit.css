@@ -15,7 +15,7 @@
 }
 
 html {
-  overflow-x: hidden; /* Предотвращаем горизонтальную прокрутку */
+  overflow-x: hidden;
   height: 100%;
 }
 
@@ -23,27 +23,24 @@ body {
   margin: 0;
   padding: 0;
   font-family: StratosSkyeng, sans-serif;
-  overflow: hidden; /* Скрываем скроллбары на body */
+  overflow: hidden;
   font-size: 14px;
   line-height: 18px;
   background: #f7f7f7;
   height: 100%;
 }
 
-/* Обертка для контента с прокруткой */
 body > div#app {
   overflow-x: hidden;
   overflow-y: auto;
   height: 100vh;
 }
 
-/* Скрываем скроллбары в WebKit-браузерах (Chrome, Safari, Samsung Internet) */
 body::-webkit-scrollbar {
   width: 0;
   background: transparent;
 }
 
-/* Скрываем скроллбары в старых IE/Edge */
 body {
   -ms-overflow-style: none;
 }

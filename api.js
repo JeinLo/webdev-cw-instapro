@@ -1,138 +1,165 @@
-const postsHost = "https://webdev-hw-api.vercel.app/api/v2/JeinLo/instapro";
+const personalKey = "prod";
+const baseHost = "https://wedev-api.sky.pro";
+const postsHost = `${baseHost}/api/v1/${personalKey}/instapro`;
 
-export function getPosts({ token }) {
-  return fetch(postsHost, {
-    method: "GET",
-    headers: {
-      Authorization: token,
-    },
-  }).then((response) => {
-    if (!response.ok) {
-      return response.text().then((text) => {
-        throw new Error(`HTTP error ${response.status}: ${text}`);
-      });
-    }
-    return response.json();
-  });
+function checkResponse(response) {
+  if (!response.ok) {
+    return response.text().then((text) => {
+      throw new Error(`Ошибка сервера: ${response.status} ${text}`);
+    });
+  }
+  return response.json();
 }
 
-export function getUserPosts({ userId, token }) {
-  return fetch(`${postsHost}/user-posts/${userId}`, {
-    method: "GET",
-    headers: {
-      Authorization: token,
-    },
-  }).then((response) => {
-    if (!response.ok) {
-      return response.text().then((text) => {
-        throw new Error(`HTTP error ${response.status}: ${text}`);
-      });
-    }
-    return response.json();
-  });
+export async function getPosts({ token }) {
+  try {
+    const headers =
+      token && token !== "Bearer undefined" ? { Authorization: token } : {};
+    const response = await fetch(postsHost, { method: "GET", headers });
+    const data = await checkResponse(response);
+    if (response.status === 401) throw new Error("Нет авторизации");
+    return data.posts;
+  } catch (error) {
+    throw new Error(`Failed to fetch posts: ${error.message}`);
+  }
 }
 
-export function addPost({ description, imageUrl, token }) {
-  return fetch(postsHost, {
-    method: "POST",
-    body: JSON.stringify({
-      description,
-      imageUrl,
-    }),
-    headers: {
-      Authorization: token,
-    },
-  }).then((response) => {
-    if (!response.ok) {
-      return response.text().then((text) => {
-        throw new Error(`HTTP error ${response.status}: ${text}`);
-      });
-    }
-    return response.json();
-  });
+export async function getUserPosts({ token, userId }) {
+  try {
+    const headers =
+      token && token !== "Bearer undefined" ? { Authorization: token } : {};
+    const response = await fetch(`${postsHost}/user-posts/${userId}`, {
+      method: "GET",
+      headers,
+    });
+    const data = await checkResponse(response);
+    if (response.status === 401) throw new Error("Нет авторизации");
+    return data.posts;
+  } catch (error) {
+    throw new Error(`Failed to fetch user posts: ${error.message}`);
+  }
 }
 
-export function registerUser({ login, password, name, imageUrl }) {
-  return fetch(postsHost + "/user", {
-    method: "POST",
-    body: JSON.stringify({
-      login,
-      password,
-      name,
-      imageUrl,
-    }),
-  }).then((response) => {
-    if (!response.ok) {
-      return response.text().then((text) => {
-        throw new Error(`HTTP error ${response.status}: ${text}`);
-      });
-    }
-    return response.json();
-  });
+export async function addPost({ token, description, imageUrl }) {
+  try {
+    if (!description || !imageUrl)
+      throw new Error("Описание или URL изображения не переданы");
+    const response = await fetch(postsHost, {
+      method: "POST",
+      headers: { Authorization: token },
+      body: JSON.stringify({ description, imageUrl }),
+    });
+    const data = await checkResponse(response);
+    if (response.status === 400)
+      throw new Error(data.error || "Некорректные данные поста");
+    if (response.status === 401) throw new Error("Нет авторизации");
+    return data;
+  } catch (error) {
+    throw new Error(`Failed to add post: ${error.message}`);
+  }
 }
 
-export function loginUser({ login, password }) {
-  return fetch(postsHost + "/user/login", {
-    method: "POST",
-    body: JSON.stringify({
-      login,
-      password,
-    }),
-  }).then((response) => {
-    if (!response.ok) {
-      return response.text().then((text) => {
-        throw new Error(`HTTP error ${response.status}: ${text}`);
-      });
-    }
-    return response.json();
-  });
+export async function likePost({ token, postId }) {
+  try {
+    const response = await fetch(`${postsHost}/${postId}/like`, {
+      method: "POST",
+      headers: { Authorization: token },
+    });
+    const data = await checkResponse(response);
+    if (response.status === 401) throw new Error("Нет авторизации");
+    return data;
+  } catch (error) {
+    throw new Error(`Failed to like post: ${error.message}`);
+  }
 }
 
-export function likePost({ postId, token }) {
-  return fetch(`${postsHost}/${postId}/like`, {
-    method: "POST",
-    headers: {
-      Authorization: token,
-    },
-  }).then((response) => {
-    if (!response.ok) {
-      return response.text().then((text) => {
-        throw new Error(`HTTP error ${response.status}: ${text}`);
-      });
-    }
-    return response.json();
-  });
+export async function dislikePost({ token, postId }) {
+  try {
+    const response = await fetch(`${postsHost}/${postId}/dislike`, {
+      method: "POST",
+      headers: { Authorization: token },
+    });
+    const data = await checkResponse(response);
+    if (response.status === 401) throw new Error("Нет авторизации");
+    return data;
+  } catch (error) {
+    throw new Error(`Failed to dislike post: ${error.message}`);
+  }
 }
 
-export function dislikePost({ postId, token }) {
-  return fetch(`${postsHost}/${postId}/dislike`, {
-    method: "POST",
-    headers: {
-      Authorization: token,
-    },
-  }).then((response) => {
-    if (!response.ok) {
-      return response.text().then((text) => {
-        throw new Error(`HTTP error ${response.status}: ${text}`);
-      });
+export async function registerUser({ login, password, name, imageUrl }) {
+  try {
+    const body = { login, password, name };
+    if (imageUrl) body.imageUrl = imageUrl;
+    console.log("Register request body:", body); // Логирование для отладки
+    const response = await fetch(`${baseHost}/api/user`, {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+    const data = await checkResponse(response);
+    if (response.status === 400) {
+      console.error("Registration error response:", data);
+      throw new Error(data.error || "Некорректные данные регистрации");
     }
-    return response.json();
-  });
+    return data;
+  } catch (error) {
+    throw new Error(`Failed to register user: ${error.message}`);
+  }
 }
 
-export function uploadImage({ file }) {
-  const data = new FormData();
-  data.append("file", file);
+export async function loginUser({ login, password }) {
+  try {
+    const response = await fetch(`${baseHost}/api/user/login`, {
+      method: "POST",
+      body: JSON.stringify({ login, password }),
+    });
+    const data = await checkResponse(response);
+    if (response.status === 400)
+      throw new Error(data.error || "Неверный логин или пароль");
+    return data;
+  } catch (error) {
+    throw new Error(`Failed to login: ${error.message}`);
+  }
+}
 
-  return fetch(postsHost + "/upload-image", {
-    method: "POST",
-    body: data,
-  }).then((response) => {
-    if (!response.ok) {
-      return response.text().then((text) => {
-        throw new Error(`HTTP error ${response.status}: ${text}`);
-      });
-    }
+export async function uploadImage({ file }) {
+  try {
+    const data = new FormData();
+    data.append("file", file);
+    const response = await fetch(`${baseHost}/api/upload/image`, {
+      method: "POST",
+      body: data,
+    });
+    const result = await checkResponse(response);
+    if (response.status === 400)
+      throw new Error(result.error || "Некорректный файл изображения");
+    if (response.status !== 200) throw new Error("Ошибка загрузки изображения");
+    return result;
+  } catch (error) {
+    throw new Error(`Failed to upload image: ${error.message}`);
+  }
+}
+
+export async function verifyToken({ token }) {
+  try {
+    const headers = { Authorization: token };
+    const response = await fetch(postsHost, { method: "GET", headers });
+    return response.status === 200;
+  } catch (error) {
+    console.error("verifyToken error:", error);
+    return false;
+  }
+}
+
+export async function deletePost({ token, postId }) {
+  try {
+    const response = await fetch(`${postsHost}/${postId}`, {
+      method: "DELETE",
+      headers: { Authorization: token },
+    });
+    if (!response.ok) throw new Error(`Ошибка удаления: ${response.status}`);
     return response.json();
-  });
+  } catch (error) {
+    throw new Error(`Failed to delete post: ${error.message}`);
+  }
 }

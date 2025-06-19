@@ -1,10 +1,10 @@
 import { renderHeaderComponent } from "./header-component.js";
 import { renderUploadImageComponent } from "./upload-image-component.js";
+import { addPost } from "../api.js";
+import { goToPage, user, showNotification } from "../index.js";
+import { POSTS_PAGE } from "../routes.js";
 
 export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
-  let imageUrl = "";
-  let description = "";
-
   const render = () => {
     const appHtml = `
       <div class="page-container">
@@ -13,55 +13,50 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
           <h3 class="form-title">Добавить пост</h3>
           <div class="form-inputs">
             <div class="upload-image-container"></div>
-            <label>
-              Описание:
-              <textarea id="description-input" class="textarea" placeholder="Введите описание поста"></textarea>
-            </label>
+            <label>Описание поста</label>
+            <textarea id="description-input" class="textarea" placeholder="Введите описание поста"></textarea>
             <div class="form-error"></div>
             <button class="button" id="add-button">Добавить</button>
           </div>
         </div>
-      </div>
-    `;
-
+      </div>`;
     appEl.innerHTML = appHtml;
 
     renderHeaderComponent({
       element: document.querySelector(".header-container"),
+      user,
+      goToPage,
     });
 
+    const uploadImageContainer = appEl.querySelector(".upload-image-container");
+    let imageUrl = "";
     renderUploadImageComponent({
-      element: document.querySelector(".upload-image-container"),
-      onImageUrlChange(newImageUrl) {
+      element: uploadImageContainer,
+      onImageUrlChange: (newImageUrl) => {
         imageUrl = newImageUrl;
       },
     });
 
-    const descriptionInput = document.getElementById("description-input");
-    descriptionInput.addEventListener("input", () => {
-      description = descriptionInput.value;
-    });
-
-    document.getElementById("add-button").addEventListener("click", () => {
+    const addButton = document.getElementById("add-button");
+    const errorEl = document.querySelector(".form-error");
+    addButton.addEventListener("click", () => {
+      const description = document
+        .getElementById("description-input")
+        .value.trim();
+      errorEl.textContent = "";
+      if (!description) {
+        errorEl.textContent = "Введите описание поста";
+        return;
+      }
       if (!imageUrl) {
-        showNotification("Выберите изображение");
+        errorEl.textContent = "Выберите изображение";
         return;
       }
-      if (!description.trim()) {
-        showNotification("Введите описание");
-        return;
-      }
-      onAddPostClick({ description, imageUrl });
+      addButton.disabled = true;
+      onAddPostClick({ description, imageUrl }).finally(() => {
+        addButton.disabled = false;
+      });
     });
   };
-
   render();
-}
-
-function showNotification(message) {
-  const notification = document.createElement("div");
-  notification.className = "notification";
-  notification.textContent = message;
-  document.body.appendChild(notification);
-  setTimeout(() => notification.remove(), 3000);
 }

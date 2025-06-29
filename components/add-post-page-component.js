@@ -9,14 +9,19 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
     const appHtml = `
       <div class="page-container">
         <div class="header-container"></div>
-        <div class="form">
+        <div class="form form--add-post">
           <h3 class="form-title">Добавить пост</h3>
           <div class="form-inputs">
             <div class="upload-image-container"></div>
-            <label>Описание поста</label>
-            <textarea id="description-input" class="textarea" placeholder="Введите описание поста"></textarea>
+            <div class="form-field">
+              <label>Описание поста</label>
+              <textarea id="description-input" class="textarea" placeholder="Введите описание поста"></textarea>
+            </div>
             <div class="form-error"></div>
             <button class="button" id="add-button">Добавить</button>
+            <div class="form-buttons">
+              <button class="button button--link" id="back-button">Назад</button>
+            </div>
           </div>
         </div>
       </div>`;
@@ -38,24 +43,34 @@ export function renderAddPostPageComponent({ appEl, onAddPostClick }) {
     });
 
     const addButton = document.getElementById("add-button");
+    const backButton = document.getElementById("back-button");
     const errorEl = document.querySelector(".form-error");
+
+    const setError = (message) => {
+      errorEl.textContent = message;
+    };
+
     addButton.addEventListener("click", () => {
       const description = document
         .getElementById("description-input")
         .value.trim();
-      errorEl.textContent = "";
+      setError("");
       if (!description) {
-        errorEl.textContent = "Введите описание поста";
+        setError("Введите описание поста");
         return;
       }
       if (!imageUrl) {
-        errorEl.textContent = "Выберите изображение";
+        setError("Выберите изображение");
         return;
       }
       addButton.disabled = true;
       onAddPostClick({ description, imageUrl }).finally(() => {
         addButton.disabled = false;
       });
+    });
+
+    backButton.addEventListener("click", () => {
+      goToPage(POSTS_PAGE);
     });
   };
   render();

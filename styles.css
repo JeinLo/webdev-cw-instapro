@@ -34,7 +34,7 @@ body {
   font-size: 28px;
   cursor: pointer;
   width: 130px;
-  color: #0057b7; /* Синий цвет для Instapro */
+  color: #0057b7;
 }
 
 .header-button {
@@ -53,16 +53,27 @@ body {
   text-align: right;
 }
 
-/* === Форма регистрации/авторизации === */
+/* === Форма регистрации/авторизации/добавления поста === */
 .form {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Центрирование содержимого */
+  align-items: center; 
   gap: 16px;
-  background-color: #fff;
   padding: 20px;
   border-radius: 8px;
   margin-top: 20px;
+}
+
+.form--login {
+  background-color: #e6f0fa; 
+}
+
+.form--register {
+  background-color: #d6eaff; 
+}
+
+.form--add-post {
+  background-color: #e0f0ff; 
 }
 
 .form-title {
@@ -70,15 +81,26 @@ body {
   line-height: 35px;
   text-align: center;
   margin-bottom: 20px;
-  color: #0057b7; /* Синий цвет для "Вход в Instapro" */
+}
+
+.form--login .form-title {
+  color: #003087; 
+}
+
+.form--register .form-title {
+  color: #0057b7; 
+}
+
+.form--add-post .form-title {
+  color: #004aad; 
 }
 
 .form-inputs {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px; 
   width: 100%;
-  align-items: center; /* Центрирование полей */
+  align-items: center; 
 }
 
 .form-field {
@@ -86,42 +108,76 @@ body {
   flex-direction: column;
   gap: 4px;
   width: 100%;
-  max-width: 300px; /* Ограничение для равномерности */
-  text-align: center; /* Центрирование текста */
+  max-width: 300px;
+  text-align: center; 
 }
 
-.input {
+.input,
+.textarea {
   padding: 10px;
-  border: 1px solid #add8e6; /* Голубая граница */
-  background-color: #f0f8ff; /* Светло-голубой фон */
+  border: 1px solid #add8e6; 
+  background-color: #f0f8ff; 
   border-radius: 6px;
   font-size: 16px;
   width: 100%;
-  text-align: center; /* Центрирование текста в полях */
+  text-align: center; 
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 100px;
 }
 
 .button {
   padding: 12px;
-  background-color: #003087; /* Темно-синий для "Войти" */
-  color: #fff;
   border: none;
-  border-radius: 12px; /* Округлые края */
+  border-radius: 12px;
   font-size: 16px;
   cursor: pointer;
   margin-top: 8px;
   width: 100%;
-  max-width: 300px; /* Равномерная ширина с полями */
+  max-width: 300px; 
+}
+
+.form--login .button {
+  background-color: #003087; 
+  color: #fff;
+}
+
+.form--register .button {
+  background-color: #4da8ff; 
+  color: #fff;
+}
+
+.form--add-post .button {
+  background-color: #0057b7;
+  color: #fff;
 }
 
 .button--link {
   background-color: transparent;
-  color: #4da8ff; /* Светло-синий для "Зарегистрироваться" */
-  border: 1px solid #4da8ff; /* Рамка */
-  border-radius: 12px; /* Округлые края */
+  border: 1px solid #4da8ff; 
+  color: #4da8ff; 
+  border-radius: 12px; 
   font-size: 14px;
   margin-top: 0;
   width: 100%;
-  max-width: 300px; /* Равномерная ширина */
+  max-width: 300px; 
+}
+
+.form--login .button--link {
+  border: 1px solid #4da8ff; 
+  color: #ffffff;
+}
+
+.form--register .button--link {
+  border: 1px solid #003087; 
+  color: #ffffff;
+}
+
+.form--add-post .button--link {
+  border: 1px solid #004aad;
+  color: #ffffff;
 }
 
 .form-buttons {
@@ -274,6 +330,8 @@ body {
 /* === Форма добавления поста === */
 .upload-image-container {
   margin-bottom: 16px;
+  width: 100%;
+  max-width: 300px; 
 }
 
 .file-upload-label {
@@ -281,14 +339,14 @@ body {
   width: 100%;
   padding: 10px;
   text-align: center;
-  border: 1px dashed #ccc;
+  border: 1px dashed #add8e6; 
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .file-upload-label:hover {
-  background-color: #f5f5f5;
+  background-color: #e6f0fa; 
 }
 
 .file-upload-image-container {
@@ -303,17 +361,7 @@ body {
   object-fit: cover;
   margin-right: 10px;
   border-radius: 5px;
-  border: 1px solid #ddd;
-}
-
-.textarea {
-  resize: vertical;
-  min-height: 100px;
-  padding: 12px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  margin-bottom: 16px;
+  border: 1px solid #add8e6;
 }
 
 /* === Ошибки и уведомления === */

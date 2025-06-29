@@ -88,38 +88,32 @@ export async function dislikePost({ token, postId }) {
 }
 
 export async function registerUser({ login, password, name, imageUrl }) {
-  try {
-    const body = { login, password, name };
-    if (imageUrl) body.imageUrl = imageUrl;
-    console.log("Register request body:", body); // Логирование для отладки
-    const response = await fetch(`${baseHost}/api/user`, {
-      method: "POST",
-      body: JSON.stringify(body),
-    });
-    const data = await checkResponse(response);
-    if (response.status === 400) {
-      console.error("Registration error response:", data);
-      throw new Error(data.error || "Некорректные данные регистрации");
-    }
-    return data;
-  } catch (error) {
-    throw new Error(`Failed to register user: ${error.message}`);
+  const body = { login, password, name };
+  if (imageUrl) body.imageUrl = imageUrl;
+  console.log("Register request body:", body); // Логирование для отладки
+  const response = await fetch(`${baseHost}/api/user`, {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+
+  if (response.status === 400) {
+    const data = await response.json();
+    throw new Error(data.error || "Некорректные данные регистрации");
   }
+  return response.json();
 }
 
 export async function loginUser({ login, password }) {
-  try {
-    const response = await fetch(`${baseHost}/api/user/login`, {
-      method: "POST",
-      body: JSON.stringify({ login, password }),
-    });
-    const data = await checkResponse(response);
-    if (response.status === 400)
-      throw new Error(data.error || "Неверный логин или пароль");
-    return data;
-  } catch (error) {
-    throw new Error(`Failed to login: ${error.message}`);
+  const response = await fetch(`${baseHost}/api/user/login`, {
+    method: "POST",
+    body: JSON.stringify({ login, password }),
+  });
+
+  if (!response.ok) {
+    const data = await response.json();
+    throw new Error(data.error || "Неверный логин или пароль");
   }
+  return response.json();
 }
 
 export async function uploadImage({ file }) {

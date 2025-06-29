@@ -41,7 +41,7 @@ export const setUser = (newUser) => {
 export const logout = () => {
   user = null;
   removeUserFromLocalStorage();
-  goToPage(AUTH_PAGE);
+  goToPage(POSTS_PAGE); // Изменено с AUTH_PAGE на POSTS_PAGE
 };
 
 export const showNotification = (message) => {
@@ -72,36 +72,18 @@ export const goToPage = (newPage, data = {}) => {
       page = LOADING_PAGE;
       renderApp();
       const token = getToken();
-      if (token) {
-        verifyToken({ token })
-          .then((isValid) => {
-            if (!isValid) {
-              console.warn("Invalid token, logging out");
-              logout();
-              return;
-            }
-            getPosts({ token })
-              .then((newPosts) => {
-                page = POSTS_PAGE;
-                posts = newPosts;
-                renderApp();
-              })
-              .catch((error) => {
-                console.error("Error fetching posts:", error);
-                showNotification(`Ошибка загрузки постов: ${error.message}`);
-                page = AUTH_PAGE;
-                renderApp();
-              });
-          })
-          .catch((error) => {
-            console.error("Error verifying token:", error);
-            showNotification(`Ошибка проверки токена: ${error.message}`);
-            logout();
-          });
-      } else {
-        page = AUTH_PAGE;
-        renderApp();
-      }
+      getPosts({ token })
+        .then((newPosts) => {
+          page = POSTS_PAGE;
+          posts = newPosts;
+          renderApp();
+        })
+        .catch((error) => {
+          console.error("Error fetching posts:", error);
+          showNotification(`Ошибка загрузки постов: ${error.message}`);
+          page = POSTS_PAGE; // Остаёмся на POSTS_PAGE даже при ошибке
+          renderApp();
+        });
       return;
     }
 
@@ -201,21 +183,4 @@ const renderApp = (data = {}) => {
   appEl.innerHTML = `<div class="page-container">Ошибка: неизвестная страница</div>`;
 };
 
-if (user) {
-  verifyToken({ token: getToken() })
-    .then((isValid) => {
-      if (!isValid) {
-        console.warn("Initial token invalid, logging out");
-        logout();
-      } else {
-        goToPage(POSTS_PAGE);
-      }
-    })
-    .catch((error) => {
-      console.error("Initial token verification failed:", error);
-      showNotification(`Ошибка проверки токена: ${error.message}`);
-      logout();
-    });
-} else {
-  goToPage(AUTH_PAGE);
-}
+goToPage(POSTS_PAGE);

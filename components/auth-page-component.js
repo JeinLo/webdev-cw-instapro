@@ -10,7 +10,7 @@ export function renderAuthPageComponent({ appEl, setUser, user, goToPage }) {
     const appHtml = `
       <div class="page-container">
         <div class="header-container"></div>
-        <div class="form">
+        <div class="form ${isLoginMode ? 'form--login' : 'form--register'}">
           <h3 class="form-title">${isLoginMode ? "Вход в Instapro" : "Регистрация в Instapro"}</h3>
           <div class="form-inputs">
             ${

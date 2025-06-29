@@ -5,13 +5,14 @@ import { ru } from "date-fns/locale";
 import { getToken, showNotification } from "../index.js";
 
 function escapeHTML(str) {
+  if (!str) return str;
   return str.replace(/[&<>'"]/g, (match) => ({
-    "&": "&",
-    "<": "<",
-    ">": ">",
-    "'": "&",
-    '"': "&",
-  }));
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&apos;",
+    '"': "&quot;",
+  }[match]));
 }
 
 export function renderPostsPageComponent({
@@ -35,7 +36,7 @@ export function renderPostsPageComponent({
           <li class="post">
             <div class="post-header" data-user-id="${post.user.id}">
               <img src="${post.user.imageUrl}" class="post-header__user-image" alt="User avatar">
-              <p class="post-header__user-name">${post.user.name}</p>
+              <p class="post-header__user-name">${escapeHTML(post.user.name)}</p>
             </div>
             <div class="post-image-container">
               <img class="post-image" src="${post.imageUrl}" alt="Post image">
@@ -49,7 +50,7 @@ export function renderPostsPageComponent({
               </p>
             </div>
             <p class="post-text">
-              <span class="user-name">${post.user.name}</span>
+              <span class="user-name">${escapeHTML(post.user.name)}</span>
               ${escapeHTML(post.description)}
             </p>
             <p class="post-date">${createdAt}</p>
@@ -109,7 +110,7 @@ export function renderPostsPageComponent({
           .then(() => {
             posts = posts.filter((p) => p.id !== postId);
             renderPosts();
-            showNotification("Пост удален");
+            showNotification("Пост удалён");
           })
           .catch((error) => {
             console.error("Error deleting post:", error);
